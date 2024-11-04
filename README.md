@@ -5,7 +5,7 @@
 
 ### Players
 * GET       api/v1/players
-* GET       api/v1/players/{rd}
+* GET       api/v1/players/{id}
 * POST      api/v1/players
 * PUT       api/v1/players/{id}
 * DELETE    api/v1/players/{id}
