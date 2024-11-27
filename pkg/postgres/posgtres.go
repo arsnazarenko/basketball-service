@@ -7,7 +7,9 @@ import (
 	"time"
 
 	"github.com/Masterminds/squirrel"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/vgarvardt/pgx-google-uuid/v5"
 )
 
 const (
@@ -45,7 +47,11 @@ func New(url string, opts ...Option) (*Postgres, error) {
 	}
 
 	poolConfig.MaxConns = int32(pg.maxPoolSize)
-
+	poolConfig.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
+		uuid.Register(conn.TypeMap())
+		return nil
+	}
+	
 	for pg.connAttempts > 0 {
 		pg.Pool, err = pgxpool.NewWithConfig(context.Background(), poolConfig)
 		if err == nil {

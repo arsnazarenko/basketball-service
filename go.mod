@@ -8,7 +8,10 @@ require (
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/rs/zerolog v1.33.0
+	github.com/vgarvardt/pgx-google-uuid/v5 v5.6.0
 )
+
+require github.com/google/uuid v1.6.0 // indirect
 
 require (
 	github.com/BurntSushi/toml v1.2.1 // indirect

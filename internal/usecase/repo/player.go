@@ -9,6 +9,7 @@ import (
 	"github.com/arsnazarenko/basketball-service/internal/entity"
 	"github.com/arsnazarenko/basketball-service/internal/usecase"
 	"github.com/arsnazarenko/basketball-service/pkg/postgres"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -25,29 +26,28 @@ func NewPlayerRepo(pg *postgres.Postgres) *PlayerRepo {
 }
 
 // CreatePlayer implements usecase.PlayerRp.
-func (p *PlayerRepo) CreatePlayer(ctx context.Context, player *entity.Player) (int64, error) {
+func (p *PlayerRepo) CreatePlayer(ctx context.Context, player *entity.Player) (uuid.UUID, error) {
 
-	query := "INSERT INTO players (name, surname, age, height, weight, citizenship, role, team_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id"
+	query := "INSERT INTO players (name, surname, height, weight, citizenship, role, team_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id"
 
-	var id int64
+	var id uuid.UUID
 	if err := p.pg.Pool.QueryRow(ctx, query,
 		player.Name,
 		player.Surname,
-		player.Age,
 		player.Height,
 		player.Weight,
 		player.Citizenship,
 		player.Role,
 		player.TeamID,
 	).Scan(&id); err != nil {
-		return -1, fmt.Errorf("repo.CreatePlayer: create player error: %w", err)
+		return uuid.Nil, fmt.Errorf("repo.CreatePlayer: create player error: %w", err)
 	}
 	return id, nil
 
 }
 
 // DeletePlayer implements usecase.PlayerRp.
-func (p *PlayerRepo) DeletePlayer(ctx context.Context, playerID int64) error {
+func (p *PlayerRepo) DeletePlayer(ctx context.Context, playerID uuid.UUID) error {
 	query := "DELETE FROM players WHERE id = $1"
 	res, err := p.pg.Pool.Exec(ctx, query, playerID)
 	if err != nil {
@@ -60,14 +60,13 @@ func (p *PlayerRepo) DeletePlayer(ctx context.Context, playerID int64) error {
 }
 
 // GetPlayer implements usecase.PlayerRp.
-func (p *PlayerRepo) GetPlayer(ctx context.Context, playerID int64) (*entity.Player, error) {
-	query := "SELECT name, surname, age, height, weight, citizenship, role, team_id FROM players WHERE id = $id"
+func (p *PlayerRepo) GetPlayer(ctx context.Context, playerID uuid.UUID) (*entity.Player, error) {
+	query := "SELECT name, surname, height, weight, citizenship, role, team_id FROM players WHERE id = $id"
 
 	var player entity.Player
 	if err := p.pg.Pool.QueryRow(ctx, query, playerID).Scan(
 		&player.Name,
 		&player.Surname,
-		&player.Age,
 		&player.Height,
 		&player.Weight,
 		&player.Citizenship,
@@ -91,7 +90,7 @@ func (p *PlayerRepo) GetPlayerList(ctx context.Context, pageSize uint64, pageNum
 		return nil, apperrors.ErrInvalidPlayerPageSize
 	}
 	limit, offset := pageSize, (pageNumber-1)*pageSize
-	query := "SELECT name, surname, age, height, weight, citizenship, role, team_id FROM players LIMIT $1 OFFSET $2"
+	query := "SELECT name, surname, height, weight, citizenship, role, team_id FROM players LIMIT $1 OFFSET $2"
 	rows, err := p.pg.Pool.Query(ctx, query, limit, offset)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -105,7 +104,6 @@ func (p *PlayerRepo) GetPlayerList(ctx context.Context, pageSize uint64, pageNum
 		if err := rows.Scan(
 			&player.Name,
 			&player.Surname,
-			&player.Age,
 			&player.Height,
 			&player.Weight,
 			&player.Citizenship,
@@ -120,13 +118,12 @@ func (p *PlayerRepo) GetPlayerList(ctx context.Context, pageSize uint64, pageNum
 }
 
 // UpdatePlayer implements usecase.PlayerRp.
-func (p *PlayerRepo) UpdatePlayer(ctx context.Context, playerID int64, player *entity.Player) error {
-	query := "UPDATE players SET name = $1, surname = $2, age = $3, height = $4, weight = $5, citizenship = $6, role = $7, team_id = $8 WHERE id = $9"
+func (p *PlayerRepo) UpdatePlayer(ctx context.Context, playerID uuid.UUID, player *entity.Player) error {
+	query := "UPDATE players SET name = $1, surname = $2, height = $3, weight = $4, citizenship = $5, role = $6, team_id = $7 WHERE id = $8"
 
 	res, err := p.pg.Pool.Exec(ctx, query,
 		player.Name,
 		player.Surname,
-		player.Age,
 		player.Height,
 		player.Weight,
 		player.Citizenship,

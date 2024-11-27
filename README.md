@@ -42,7 +42,6 @@
 * ID
 * Name
 * Surname
-* Age
 * Height
 * Weight
 * Citizenship
@@ -58,12 +57,11 @@
 * ID
 * HomeTeamID
 * GuestTeamID
-* Type
-* Date
-* Winner (bool or one byte type with 0 or 1 values)
+* GameDate
+* HomeScore
+* GuestScore
 
 ### Statistics (Many To Many: Players -> Statistics <- Games)
-* ID
 * PlayerID
 * GameID
 * Points
