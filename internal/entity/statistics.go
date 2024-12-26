@@ -1,6 +1,7 @@
 package entity
 
-import uuid "github.com/vgarvardt/pgx-google-uuid/v5"
+import "github.com/google/uuid"
+
 
 type Statistics struct {
 	PlayerID      uuid.UUID `json:"playerId,omitempty"`

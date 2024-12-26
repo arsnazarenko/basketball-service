@@ -1,6 +1,6 @@
 package entity
 
-import uuid "github.com/vgarvardt/pgx-google-uuid/v5"
+import "github.com/jackc/pgx/v5/pgtype"
 
 type Role string
 
@@ -19,5 +19,5 @@ type Player struct {
 	Weight      uint8     `json:"weight,omitempty"`
 	Citizenship string    `json:"citizenship,omitempty"`
 	Role        Role      `json:"role,omitempty"`
-	TeamID      uuid.UUID `json:"teamId,omitempty"`
+	TeamID      pgtype.UUID `json:"teamId,omitempty"`
 }

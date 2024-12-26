@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/arsnazarenko/basketball-service/internal/entity"
-	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type (
@@ -19,10 +19,10 @@ type (
 
 	// PlayerRp - mongodb
 	PlayerRp interface {
-		CreatePlayer(ctx context.Context, player *entity.Player) (uuid.UUID, error)
-		UpdatePlayer(ctx context.Context, playerId uuid.UUID, player *entity.Player) error
-		DeletePlayer(ctx context.Context, playerId uuid.UUID) error
-		GetPlayer(ctx context.Context, playerId uuid.UUID) (*entity.Player, error)
+		CreatePlayer(ctx context.Context, player *entity.Player) (pgtype.UUID, error)
+		UpdatePlayer(ctx context.Context, playerId pgtype.UUID, player *entity.Player) error
+		DeletePlayer(ctx context.Context, playerId pgtype.UUID) error
+		GetPlayer(ctx context.Context, playerId pgtype.UUID) (*entity.Player, error)
 		GetPlayerList(ctx context.Context, count, offset uint64) ([]entity.Player, error)
 	}
 )

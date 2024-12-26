@@ -1,7 +1,7 @@
 CREATE TYPE role AS ENUM ('PG', 'SG', 'SF', 'PF', 'C');
 CREATE TYPE conference AS ENUM ('EASTERN', 'WESTERN');
 
-CREATE TABLE IN NOT EXISTS players (
+CREATE TABLE IF NOT EXISTS players (
     id uuid not null default gen_random_uuid(),
     name varchar(256) not null,
     surname varchar(256) not null,
@@ -14,7 +14,7 @@ CREATE TABLE IN NOT EXISTS players (
 )
 
 
-CREATE TABLE IN NOT EXISTS teams (
+CREATE TABLE IF NOT EXISTS teams (
     id uuid not null default gen_random_uuid(),
     name varchar(256) not null,
     conf conference not null,
@@ -22,7 +22,7 @@ CREATE TABLE IN NOT EXISTS teams (
 )
 
 
-CREATE TABLE IN NOT EXISTS games (
+CREATE TABLE IF NOT EXISTS games (
     id uuid not null default gen_random_uuid(),
     home_team_id uuid not null references teams(id),
     guest_team_id uuid not null references teams(id),
@@ -32,7 +32,7 @@ CREATE TABLE IN NOT EXISTS games (
     primary_key(id)
 )
 
-CREATE TABLE IN NOT EXISTS statistics (
+CREATE TABLE IF NOT EXISTS statistics (
     player_id uuid not null references players(id),
     game_id uuid not null references games(id),
     points smallint not null,
